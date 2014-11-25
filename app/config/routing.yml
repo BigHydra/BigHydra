@@ -1,0 +1,4 @@
+hydra_big_hydra:
+    resource: "@HydraBigHydraBundle/Resources/config/routing.php"
+    prefix:   /
+
