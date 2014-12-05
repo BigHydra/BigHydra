@@ -49,3 +49,10 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+hydra_big_hydra:
+    jira:
+        mongo:
+            server:               "%mongo.server%"
+            db:                   "%mongo.jira.db%"
+            collection:           "%mongo.jira.collection%"

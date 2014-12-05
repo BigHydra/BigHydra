@@ -22,3 +22,7 @@ parameters:
     debug_toolbar:          true
     debug_redirects:        false
     use_assetic_controller: true
+
+    mongo.server:           'mongodb://localhost:27017'
+    mongo.jira.db:          jira
+    mongo.jira.collection:  issue

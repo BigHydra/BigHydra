@@ -20,9 +20,13 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('hydra_big_hydra');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $jiraNode = $rootNode->children()->arrayNode('jira');
+        $mongoNode = $jiraNode->children()->arrayNode('mongo');
+        $mongoNode->children()
+            ->scalarNode('server')->defaultValue('mongodb://localhost:27017')->end()
+            ->scalarNode('db')->defaultValue('jira')->end()
+            ->scalarNode('collection')->defaultValue('issue')->end()
+            ->end();
 
         return $treeBuilder;
     }
