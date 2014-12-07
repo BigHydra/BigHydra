@@ -4,18 +4,32 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Parameter;
 
-/*
-
 $container->setDefinition(
-    'hydra_big_hydra.example',
+    'hydra_big_hydra.jira.mongo_client',
     new Definition(
-        'Hydra\BigHydraBundle\Example',
+        'MongoClient',
         array(
-            new Reference('service_id'),
-            "plain_value",
-            new Parameter('parameter_name'),
+            new Parameter('jira.mongo.server'),
         )
     )
 );
 
-*/
+$container->setDefinition(
+    'hydra_big_hydra.jira.mongo_collection',
+    new Definition(
+        'MongoCollection'
+    )
+)->setFactoryService('hydra_big_hydra.jira.mongo_client')
+    ->setFactoryMethod('selectCollection')
+        ->addArgument(new Parameter('jira.mongo.db'))
+        ->addArgument(new Parameter('jira.mongo.collection'));
+
+$container->setDefinition(
+    'hydra_big_hydra.jira.mongo_repository',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\Load\MongoRepository',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_collection')
+        )
+    )
+);
