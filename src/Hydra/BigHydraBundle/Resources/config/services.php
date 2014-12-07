@@ -35,9 +35,25 @@ $container->setDefinition(
 );
 
 $container->setDefinition(
-    'hydra_big_hydra.service.jirareports',
+    'hydra_big_hydra.jira.publish.csv.byauthorandday',
     new Definition(
-        'Hydra\BigHydraBundle\Jira\Analyse\JiraReports',
+        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDay'
+    )
+);
+
+$container->setDefinition(
+    'hydra_big_hydra.jira.report.byauthorandday',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\IssueReportByAuthorAndDay',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_repository')
+        )
+    )
+);
+$container->setDefinition(
+    'hydra_big_hydra.jira.report',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\IssueReport',
         array(
             new Reference('hydra_big_hydra.jira.mongo_repository')
         )

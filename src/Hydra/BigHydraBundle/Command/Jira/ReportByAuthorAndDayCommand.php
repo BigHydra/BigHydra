@@ -2,7 +2,7 @@
 
 namespace Hydra\BigHydraBundle\Command\Jira;
 
-use Hydra\BigHydraBundle\Jira\Analyse\JiraReports;
+use Hydra\BigHydraBundle\Jira\IssueReportByAuthorAndDay;
 use Hydra\BigHydraBundle\Library\DateCalculator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -45,9 +45,9 @@ class ReportByAuthorAndDayCommand extends ContainerAwareCommand
     {
         $dates = $this->getWeekDays($week);
 
-        /** @var JiraReports $timelog */
-        $timelog = $this->getContainer()->get('hydra_big_hydra.service.jirareports');
-        $log = $timelog->getByAuthorAndDay($authors, $dates);
+        /** @var IssueReportByAuthorAndDay $report */
+        $report = $this->getContainer()->get('hydra_big_hydra.jira.report.byauthorandday');
+        $log = $report->getByAuthorAndDay($authors, $dates);
 
         $filename = sprintf(
             '%s_KW%s_%s.csv',

@@ -1,13 +1,12 @@
 <?php
-namespace Hydra\BigHydraBundle\Jira\Analyse;
+namespace Hydra\BigHydraBundle\Jira;
 
-use Hydra\BigHydraBundle\Jira\Analyse\WorkLog\ByAuthorAndDay;
 use Hydra\BigHydraBundle\Jira\Analyse\WorkLog\ByAuthorAndTicket;
 use Hydra\BigHydraBundle\Jira\Analyse\WorkLog\ByAuthorTicketAndDay;
 use Hydra\BigHydraBundle\Jira\Load\MongoRepository;
 use Hydra\BigHydraBundle\Library\TimeCalculator;
 
-class JiraReports
+class IssueReport
 {
     /** @var MongoRepository */
     protected $mongoRepo;
@@ -18,46 +17,6 @@ class JiraReports
     public function __construct(MongoRepository $mongoRepo)
     {
         $this->mongoRepo = $mongoRepo;
-    }
-
-    /**
-     * @param array $author
-     * @param array $validDates
-     *
-     * @return array
-     */
-    public function getByAuthorAndDay(array $author, array $validDates)
-    {
-        $report = new ByAuthorAndDay($this->mongoRepo);
-        $report->setAuthorFilter($author);
-        $report->setDateFilter($validDates);
-        $rawReport = $report->runReport();
-//        print_r($rawReport);exit;
-        $result = [];
-        foreach ($rawReport as $value) {
-            $value['date'] = sprintf(
-                '%02d-%02d-%02d',
-                $value['year'],
-                $value['month'],
-                $value['day']
-            );
-            unset($value['year'], $value['month'], $value['day']);
-            $value['rawTime'] = $value['time'];
-            $value['time'] = TimeCalculator::secondsToHumanReadableTime($value['time']);
-            $value['affectedIssues'] = implode(
-                ";\n",
-                array_map(
-                    function ($entry) {
-                        return implode(' ', $entry);
-                    },
-                    $value['affectedIssues']
-                )
-            );
-
-            $result[] = $value;
-        }
-
-        return $result;
     }
 
     /**
