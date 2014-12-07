@@ -33,3 +33,13 @@ $container->setDefinition(
         )
     )
 );
+
+$container->setDefinition(
+    'hydra_big_hydra.service.jirareports',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\Analyse\JiraReports',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_repository')
+        )
+    )
+);
