@@ -3,7 +3,6 @@
 namespace Hydra\BigHydraBundle\Command\Jira;
 
 use Hydra\BigHydraBundle\Jira\IssueReportByAuthorAndDay;
-use Hydra\BigHydraBundle\Library\DateCalculator;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,24 +42,9 @@ class ReportByAuthorAndDayCommand extends ContainerAwareCommand
      */
     protected function createReport(array $authors, $week)
     {
-        $dates = $this->getWeekDays($week);
-
         /** @var IssueReportByAuthorAndDay $report */
         $report = $this->getContainer()->get('hydra_big_hydra.jira.report.byauthorandday');
-        $log = $report->getByAuthorAndDay($authors, $dates);
-
-        $filename = sprintf(
-            '%s_KW%s_%s.csv',
-            date("YmdHis"),
-            $week,
-            implode("_", $authors)
-        );
-        $fp = fopen($filename, 'w');
-        fputcsv($fp, array_keys(current($log)));
-        foreach ($log as $logLine) {
-            fputcsv($fp, $logLine);
-        }
-        fclose($fp);
+        $filename = $report->getByAuthorAndDay($week, $authors);
 
         echo "$filename\n";
 //        echo "Successfully written into 'timelog.csv'\n";
@@ -69,34 +53,5 @@ class ReportByAuthorAndDayCommand extends ContainerAwareCommand
 //            array_slice($log, 0, 1)[0],
 //            JSON_PRETTY_PRINT
 //        );
-    }
-
-    /**
-     * @param string $week
-     *
-     * @return \string[]
-     * @throws \RuntimeException
-     */
-    protected function getWeekDays(&$week)
-    {
-        $dateCalc = new DateCalculator();
-        switch ($week) {
-            case 'LW':
-                $week = $dateCalc->getLastWeekNumber();
-                break;
-            case 'CW':
-                $week = $dateCalc->getCurrentWeekNumber();
-                break;
-        }
-        if (!is_numeric($week)) {
-            throw new \RuntimeException(
-                sprintf(
-                    'Wrong week "%s" provided!',
-                    $week
-                )
-            );
-        }
-        $dates = $dateCalc->getDayRangesOfWeek($week);
-        return $dates;
     }
 }

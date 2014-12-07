@@ -37,7 +37,14 @@ $container->setDefinition(
 $container->setDefinition(
     'hydra_big_hydra.jira.publish.csv.byauthorandday',
     new Definition(
-        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDay'
+        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayMail'
+    )
+);
+
+$container->setDefinition(
+    'hydra_big_hydra.jira.publish.mail.byauthorandday',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayCsv'
     )
 );
 

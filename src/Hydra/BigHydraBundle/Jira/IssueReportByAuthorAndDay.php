@@ -4,11 +4,15 @@ namespace Hydra\BigHydraBundle\Jira;
 use Hydra\BigHydraBundle\Jira\Analyse\WorkLog\ByAuthorAndDay;
 use Hydra\BigHydraBundle\Jira\Load\MongoRepository;
 use Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayCsv;
+use Hydra\BigHydraBundle\Jira\Publish\Mail\ByAuthorAndDayMail;
+use Hydra\BigHydraBundle\Library\DateCalculator;
 
 class IssueReportByAuthorAndDay
 {
     /** @var MongoRepository */
     protected $mongoRepo;
+    /** @var ByAuthorAndDayCsv */
+    protected $csvConverter;
 
     /**
      * @param MongoRepository $mongoRepo
@@ -16,20 +20,27 @@ class IssueReportByAuthorAndDay
     public function __construct(MongoRepository $mongoRepo)
     {
         $this->mongoRepo = $mongoRepo;
+        $this->csvConverter = new ByAuthorAndDayCsv();
     }
 
     /**
+     * @param string $week
      * @param array $author
-     * @param array $validDates
      *
-     * @return array
+     * @return string
      */
-    public function getByAuthorAndDay(array $author, array $validDates)
+    public function getByAuthorAndDay($week, array $author)
     {
-        $rawReport = $this->executeReport($author, $validDates);
+        $dateFilter = $this->getWeekDays($week);
+        $rawReport = $this->executeReport($author, $dateFilter);
         $result = $this->createCsvReadyExport($rawReport);
 
-        return $result;
+        $filename = $this->buildCsvFileName($week, $author);
+        $this->csvConverter->saveToFile($filename, $result);
+//        $mailer = new ByAuthorAndDayMail();
+//        $mailer->sendMail($result);
+
+        return $filename;
     }
 
     /**
@@ -52,8 +63,54 @@ class IssueReportByAuthorAndDay
      */
     protected function createCsvReadyExport($rawReport)
     {
-        $csvConverter = new ByAuthorAndDayCsv();
-        $result = $csvConverter->flatten($rawReport);
+        $result = $this->csvConverter->flatten($rawReport);
         return $result;
+    }
+
+    protected function buildCsvFileName($week, $authors)
+    {
+        $filename = sprintf(
+            '%s_KW%s',
+            date("YmdHis"),
+            $week
+        );
+        if (0 === count($authors)) {
+            $filename .= '_all';
+        } else {
+            $filename .= '_' . implode("_", $authors);
+        }
+
+        $filename .= '.csv';
+
+        return $filename;
+    }
+
+    /**
+     * @param string $week
+     *
+     * @return \string[]
+     * @throws \RuntimeException
+     */
+    protected function getWeekDays(&$week)
+    {
+        $dateCalc = new DateCalculator();
+        switch ($week) {
+            case 'LW':
+                $week = $dateCalc->getLastWeekNumber();
+                break;
+            case 'CW':
+                $week = $dateCalc->getCurrentWeekNumber();
+                break;
+        }
+        if (!is_numeric($week)) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Wrong week "%s" provided!',
+                    $week
+                )
+            );
+        }
+        $dates = $dateCalc->getDayRangesOfWeek($week);
+        return $dates;
     }
 }
