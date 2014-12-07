@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TestCommand extends ContainerAwareCommand
 {
-    const NAME = 'hydra:jira:test';
+    const NAME = 'hydra:jira-rest-api:test';
 
     protected function configure()
     {
