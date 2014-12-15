@@ -31,7 +31,7 @@ class IssueSync
     {
 //        $jiraQuery = 'project = INTMPM OR (project = LATAMZ AND labels in (hydra)) ';
         $jiraQuery = 'project = LATAMZ AND labels in (hydra)';
-        $fields = 'id,key,summary,updated,comment,worklog';
+        $fields = 'id,key,summary,updated,timetracking,comment,worklog';
         $expand = 'changelog,operations';
         $startAt = 0;
         $total = 1;

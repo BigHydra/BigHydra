@@ -80,3 +80,12 @@ $container->setDefinition(
         )
     )
 );
+$container->setDefinition(
+    'hydra_big_hydra.jira.mentionedreport',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\MentionedReport',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_repository'),
+        )
+    )
+);
