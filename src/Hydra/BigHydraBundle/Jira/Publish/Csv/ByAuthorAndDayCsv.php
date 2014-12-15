@@ -3,7 +3,7 @@ namespace Hydra\BigHydraBundle\Jira\Publish\Csv;
 
 use Hydra\BigHydraBundle\Library\TimeCalculator;
 
-class ByAuthorAndDayCsv
+class ByAuthorAndDayCsv extends Csv
 {
     /**
      * @param array $rawReport
@@ -36,19 +36,5 @@ class ByAuthorAndDayCsv
             $result[] = $value;
         }
         return $result;
-    }
-
-    /**
-     * @param string $filename
-     * @param array $report
-     */
-    public function saveToFile($filename, array $report)
-    {
-        $fp = fopen($filename, 'w');
-        fputcsv($fp, array_keys(current($report)));
-        foreach ($report as $line) {
-            fputcsv($fp, $line);
-        }
-        fclose($fp);
     }
 }
