@@ -35,7 +35,7 @@ class ByAuthorTicketAndDay extends AbstractWorkLog
             ],
             static::KEY_POST_FILTER => [],
             static::KEY_SORT => [
-                '$sort' => ['_id.author' => 1, '_id.issue' => 1],
+                '$sort' => ['_id.author' => 1, '_id.issue' => 1, '_id.year' => 1, '_id.month' => 1, '_id.day' => 1],
             ],
         ];
 

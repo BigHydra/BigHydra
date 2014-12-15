@@ -37,32 +37,46 @@ $container->setDefinition(
 $container->setDefinition(
     'hydra_big_hydra.jira.publish.csv.byauthorandday',
     new Definition(
-        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayMail'
+        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayMailCsv'
     )
 );
 
 $container->setDefinition(
-    'hydra_big_hydra.jira.publish.mail.byauthorandday',
+    'hydra_big_hydra.jira.publish.mail.hydraweeklyreportmail',
     new Definition(
-        'Hydra\BigHydraBundle\Jira\Publish\Csv\ByAuthorAndDayCsv'
-    )
-);
-
-$container->setDefinition(
-    'hydra_big_hydra.jira.report.byauthorandday',
-    new Definition(
-        'Hydra\BigHydraBundle\Jira\IssueReportByAuthorAndDay',
+        'Hydra\BigHydraBundle\Jira\Publish\Mail\HydraWeeklyReportMail',
         array(
-            new Reference('hydra_big_hydra.jira.mongo_repository')
+            new Reference('mailer'),
         )
     )
 );
+$container->setDefinition(
+    'hydra_big_hydra.jira.report.mailconfig',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\Publish\Mail\MailConfig',
+        array(
+            new Parameter('jira.report.mail'),
+        )
+    )
+);
+$container->setDefinition(
+    'hydra_big_hydra.jira.report.hydraweeklyreport',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\HydraWeeklyReport',
+        array(
+            new Reference('hydra_big_hydra.jira.report.mailconfig'),
+            new Reference('hydra_big_hydra.jira.mongo_repository'),
+            new Reference('hydra_big_hydra.jira.publish.mail.hydraweeklyreportmail'),
+        )
+    )
+);
+
 $container->setDefinition(
     'hydra_big_hydra.jira.report',
     new Definition(
         'Hydra\BigHydraBundle\Jira\IssueReport',
         array(
-            new Reference('hydra_big_hydra.jira.mongo_repository')
+            new Reference('hydra_big_hydra.jira.mongo_repository'),
         )
     )
 );

@@ -2,6 +2,7 @@
 
 namespace Hydra\BigHydraBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -19,15 +20,39 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('hydra_big_hydra');
-
         $jiraNode = $rootNode->children()->arrayNode('jira');
-        $mongoNode = $jiraNode->children()->arrayNode('mongo');
+
+        $this->buildMongoNode($jiraNode);
+        $this->buildMailNode($jiraNode);
+
+        return $treeBuilder;
+    }
+
+    /**
+     * @param ArrayNodeDefinition $jiraNode
+     */
+    protected function buildMongoNode(ArrayNodeDefinition $jiraNode)
+    {
+        $mongoNode = $jiraNode->children()->arrayNode('mongo')->addDefaultsIfNotSet();
         $mongoNode->children()
             ->scalarNode('server')->defaultValue('mongodb://localhost:27017')->end()
             ->scalarNode('db')->defaultValue('jira')->end()
             ->scalarNode('collection')->defaultValue('issue')->end()
             ->end();
+    }
 
-        return $treeBuilder;
+    /**
+     * @param ArrayNodeDefinition $jiraNode
+     */
+    protected function buildMailNode(ArrayNodeDefinition $jiraNode)
+    {
+        $reportNode = $jiraNode->children()->arrayNode('report');
+        $mailNode = $reportNode->children()->arrayNode('mail');
+        $mailNode->children()
+            ->scalarNode('sender')->end()
+            ->scalarNode('cc')->end()
+            ->scalarNode('debug')->end()
+            ->scalarNode('debug_target')->end()
+            ->end();
     }
 }

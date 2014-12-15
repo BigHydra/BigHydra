@@ -17,6 +17,12 @@ class ByAuthorAndDay extends AbstractWorkLog
                 '$group' => [
                     '_id' => [
                         'author' => '$fields.worklog.worklogs.author.name',
+                        'authorEmail' => [
+                            '$ifNull' => [
+                                '$fields.worklog.worklogs.author.emailAddress',
+                                null,
+                            ],
+                        ],
 //                        'date' => [
 //                                '$concat' => [
 //                                    '$year' => '$fields.worklog.worklogs.startedDate',

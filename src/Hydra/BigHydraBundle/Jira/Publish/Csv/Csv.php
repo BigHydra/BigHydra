@@ -9,6 +9,10 @@ class Csv
      */
     public function saveToFile($filename, array $report)
     {
+        if (0 === count($report)) {
+            return;
+        }
+
         $fp = fopen($filename, 'w');
         fputcsv($fp, array_keys(current($report)));
         foreach ($report as $line) {

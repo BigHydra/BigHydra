@@ -9,8 +9,8 @@ parameters:
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
-    mailer_transport:  smtp
-    mailer_host:       127.0.0.1
+    mailer_transport:  gmail
+    mailer_host:       ~
     mailer_user:       ~
     mailer_password:   ~
 
@@ -26,3 +26,8 @@ parameters:
     mongo.server:           'mongodb://localhost:27017'
     mongo.jira.db:          jira
     mongo.jira.collection:  issue
+
+    report.mail.sender:         'Mr. Sender|sender@report.local'
+    report.mail.cc:             cc1@report.local;cc2@report.local
+    report.mail.debug:          true
+    report.mail.debug_target:   debug@report.local

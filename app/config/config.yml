@@ -56,3 +56,10 @@ hydra_big_hydra:
             server:               "%mongo.server%"
             db:                   "%mongo.jira.db%"
             collection:           "%mongo.jira.collection%"
+        report:
+            mail:
+                sender:           "%report.mail.sender%"
+                cc:               "%report.mail.cc%"
+                debug:            "%report.mail.debug%"
+                debug_target:     "%report.mail.debug_target%"
+

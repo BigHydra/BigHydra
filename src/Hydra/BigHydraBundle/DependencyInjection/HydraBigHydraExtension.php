@@ -21,10 +21,13 @@ class HydraBigHydraExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+        $jiraConfig = $config['jira'];
 
-        $container->setParameter('jira.mongo.server', $config['jira']['mongo']['server']);
-        $container->setParameter('jira.mongo.db', $config['jira']['mongo']['db']);
-        $container->setParameter('jira.mongo.collection', $config['jira']['mongo']['collection']);
+        $container->setParameter('jira.mongo.server', $jiraConfig['mongo']['server']);
+        $container->setParameter('jira.mongo.db', $jiraConfig['mongo']['db']);
+        $container->setParameter('jira.mongo.collection', $jiraConfig['mongo']['collection']);
+
+        $container->setParameter('jira.report.mail', $jiraConfig['report']['mail']);
 
         $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
