@@ -23,6 +23,8 @@ class HydraBigHydraExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         $jiraConfig = $config['jira'];
 
+        $container->setParameter('jira.sync', $jiraConfig['sync']);
+
         $container->setParameter('jira.mongo.server', $jiraConfig['mongo']['server']);
         $container->setParameter('jira.mongo.db', $jiraConfig['mongo']['db']);
         $container->setParameter('jira.mongo.collection', $jiraConfig['mongo']['collection']);

@@ -31,3 +31,5 @@ parameters:
     report.mail.cc:             cc1@report.local;cc2@report.local
     report.mail.debug:          true
     report.mail.debug_target:   debug@report.local
+
+    sync.query:         project in (DEMO) and labels in (foo,bar)

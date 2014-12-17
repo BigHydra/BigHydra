@@ -28,7 +28,8 @@ class SyncCommand extends ContainerAwareCommand
             ->setName(static::NAME)
             ->setDescription('Sync the Jira tickets')
             ->addArgument('host', InputArgument::REQUIRED)
-            ->addArgument('username', InputArgument::REQUIRED);
+            ->addArgument('username', InputArgument::REQUIRED)
+        ;
     }
 
     /**
@@ -44,10 +45,10 @@ class SyncCommand extends ContainerAwareCommand
         $password = $interactiveDialog->askHiddenResponse(
             $output,
             'Enter password: ',
-            false
+            null
         );
 
-        if (false === $password) {
+        if (null === $password) {
             throw new \InvalidArgumentException("You have to provide a password");
         }
 
@@ -69,7 +70,8 @@ class SyncCommand extends ContainerAwareCommand
         $issueService = $jiraFactory->getIssueService($host, $username, $password);
         $extractIssue = new ExtractJiraIssue($issueService);
 
-        $syncService = new IssueSync($repository, $extractIssue);
+        $syncConfig = $this->getContainer()->getParameter('jira.sync');
+        $syncService = new IssueSync($repository, $extractIssue, $syncConfig);
         $syncService->sync();
     }
 }

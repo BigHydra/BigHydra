@@ -52,6 +52,8 @@ swiftmailer:
 
 hydra_big_hydra:
     jira:
+        sync:
+            query:                "%sync.query%"
         mongo:
             server:               "%mongo.server%"
             db:                   "%mongo.jira.db%"

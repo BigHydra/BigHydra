@@ -26,9 +26,9 @@ class MongoRepository
     }
 
     /**
-     * @param $issues
+     * @param array $issues
      */
-    public function saveToMongoDb($issues)
+    public function save(array $issues)
     {
         foreach ($issues as $issue) {
             $issue['_id'] = $issue['key'];
@@ -42,13 +42,33 @@ class MongoRepository
      *
      * @return \MongoCursor
      */
-    public function readFromMongoDb($authorName)
+    public function findByAuthor($authorName)
     {
         $filter = [
             "fields.comment.comments.author.name" => $authorName
         ];
 
         return $this->collection->find($filter);
+    }
+
+    /**
+     * @return null|string Y-m-d H:i
+     */
+    public function findLastUpdatedDate()
+    {
+        $filter = [];
+        $fields = ['fields.updatedDate' => 1];
+        $sort = ['fields.updatedDate' => -1];
+
+        $lastDocument = $this->collection->find($filter, $fields)->sort($sort)->limit(1)->getNext();
+        if (null !== $lastDocument) {
+            /** @var \MongoDate $updatedDate */
+            $updatedDate = $lastDocument['fields']['updatedDate'];
+
+            return date('Y-m-d H:i', $updatedDate->sec);
+        }
+
+        return null;
     }
 
     /**

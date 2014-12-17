@@ -14,14 +14,19 @@ class IssueSync
     /** @var ExtractJiraIssue */
     protected $extractIssue;
 
+    /** @var string */
+    protected $queryFilter;
+
     /**
      * @param MongoRepository $repository
      * @param ExtractJiraIssue $extractIssue
+     * @param array $config
      */
-    public function __construct(MongoRepository $repository, ExtractJiraIssue $extractIssue)
+    public function __construct(MongoRepository $repository, ExtractJiraIssue $extractIssue, array $config)
     {
         $this->repository = $repository;
         $this->extractIssue = $extractIssue;
+        $this->queryFilter = $config['query'];
     }
 
     /**
@@ -29,8 +34,10 @@ class IssueSync
      */
     public function sync()
     {
-//        $jiraQuery = 'project = INTMPM OR (project = LATAMZ AND labels in (hydra)) ';
-        $jiraQuery = 'project = LATAMZ AND labels in (hydra)';
+        $jiraQuery = $this->buildQuery(
+            $this->queryFilter,
+            $this->repository->findLastUpdatedDate()
+        );
         $fields = 'id,key,summary,updated,timetracking,comment,worklog';
         $expand = 'changelog,operations';
         $startAt = 0;
@@ -38,12 +45,11 @@ class IssueSync
 
         while ($startAt < $total) {
             $chunk = $this->extractIssue->retrieveChunk($jiraQuery, $startAt, self::CHUNK_SIZE, $fields, $expand);
-//            file_put_contents('getCommentsAndWorklog.php', '<?php ' . var_export($chunk, true));
             $this->save($chunk);
 
             $startAt += count($chunk['issues']);
             $total = $chunk['total'];
-            echo "retrieving issues.. (${startAt}/${total})\n";
+            echo "retrieved issues.. (${startAt}/${total})\n";
         }
 
         return $startAt;
@@ -54,6 +60,23 @@ class IssueSync
      */
     protected function save($chunk)
     {
-        $this->repository->saveToMongoDb($chunk['issues']);
+        $this->repository->save($chunk['issues']);
+    }
+
+    /**
+     * @param string $query
+     * @param string $lastUpdatedAt
+     *
+     * @return string
+     */
+    protected function buildQuery($query, $lastUpdatedAt)
+    {
+        $jiraQuery = $query;
+        if (null !== $lastUpdatedAt) {
+            $jiraQuery .= sprintf(" AND updated >= '%s'", $lastUpdatedAt);
+        }
+        $jiraQuery .= ' ORDER BY updated ASC';
+
+        return $jiraQuery;
     }
 }

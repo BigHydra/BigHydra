@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('hydra_big_hydra');
         $jiraNode = $rootNode->children()->arrayNode('jira');
 
+        $this->buildSyncNode($jiraNode);
         $this->buildMongoNode($jiraNode);
         $this->buildMailNode($jiraNode);
 
@@ -53,6 +54,17 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('cc')->end()
             ->scalarNode('debug')->end()
             ->scalarNode('debug_target')->end()
+            ->end();
+    }
+
+    /**
+     * @param ArrayNodeDefinition $jiraNode
+     */
+    protected function buildSyncNode(ArrayNodeDefinition $jiraNode)
+    {
+        $jiraNode->children()->arrayNode('sync')
+            ->children()
+            ->scalarNode('query')->end()
             ->end();
     }
 }
