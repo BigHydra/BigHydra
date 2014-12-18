@@ -89,3 +89,34 @@ $container->setDefinition(
         )
     )
 );
+
+$container->setDefinition(
+    'hydra_big_hydra.jira.issueservice',
+    new Definition(
+        'Hydra\JiraRestApiBundle\Service\IssueService'
+    )
+)->setFactoryService('hydra_jira_rest.service_factory')
+    ->setFactoryMethod('getIssueService')
+    ->addArgument(new Parameter('jira.auth.host'))
+    ->addArgument(new Parameter('jira.auth.username'))
+    ->addArgument(new Parameter('jira.auth.password'));
+$container->setDefinition(
+    'hydra_big_hydra.jira.extractjiraissue',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\Extract\ExtractJiraIssue',
+        array(
+            new Reference('hydra_big_hydra.jira.issueservice'),
+        )
+    )
+);
+$container->setDefinition(
+    'hydra_big_hydra.jira.issuesync',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\IssueSync',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_repository'),
+            new Reference('hydra_big_hydra.jira.extractjiraissue'),
+            new Parameter('jira.sync'),
+        )
+    )
+);

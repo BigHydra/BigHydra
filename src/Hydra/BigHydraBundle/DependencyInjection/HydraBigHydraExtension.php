@@ -21,7 +21,12 @@ class HydraBigHydraExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
         $jiraConfig = $config['jira'];
+
+        $container->setParameter('jira.auth.host', $jiraConfig['auth']['host']);
+        $container->setParameter('jira.auth.username', $jiraConfig['auth']['username']);
+        $container->setParameter('jira.auth.password', $jiraConfig['auth']['password']);
 
         $container->setParameter('jira.sync', $jiraConfig['sync']);
 

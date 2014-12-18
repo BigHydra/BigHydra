@@ -52,6 +52,10 @@ swiftmailer:
 
 hydra_big_hydra:
     jira:
+        auth:
+            host:                 "%jira.auth.host%"
+            username:             "%jira.auth.username%"
+            password:             "%jira.auth.password%"
         sync:
             query:                "%sync.query%"
         mongo:

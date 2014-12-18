@@ -52,15 +52,18 @@ class SyncCommand extends ContainerAwareCommand
             throw new \InvalidArgumentException("You have to provide a password");
         }
 
-        $this->syncIssues($host, $username, $password);
+        $syncService = $this->instantiateIssueSync($host, $username, $password);
+        $syncService->sync();
     }
 
     /**
      * @param string $host
      * @param string $username
      * @param string $password
+     *
+     * @return IssueSync
      */
-    protected function syncIssues($host, $username, $password)
+    protected function instantiateIssueSync($host, $username, $password)
     {
         /** @var MongoRepository $repository */
         $repository = $this->getContainer()->get('hydra_big_hydra.jira.mongo_repository');
@@ -72,6 +75,7 @@ class SyncCommand extends ContainerAwareCommand
 
         $syncConfig = $this->getContainer()->getParameter('jira.sync');
         $syncService = new IssueSync($repository, $extractIssue, $syncConfig);
-        $syncService->sync();
+
+        return $syncService;
     }
 }

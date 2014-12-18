@@ -32,4 +32,8 @@ parameters:
     report.mail.debug:          true
     report.mail.debug_target:   debug@report.local
 
-    sync.query:         project in (DEMO) and labels in (foo,bar)
+    jira.auth.host:         http://jira.atlassian.com
+    jira.auth.username:     demo
+    jira.auth.password:     yourSecretPassword
+
+    sync.query:             project in (DEMO) and labels in (foo,bar)
