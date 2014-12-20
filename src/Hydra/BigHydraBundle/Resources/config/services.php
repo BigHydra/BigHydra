@@ -120,3 +120,13 @@ $container->setDefinition(
         )
     )
 );
+
+$container->setDefinition(
+    'hydra_big_hydra.jira.commentgrep',
+    new Definition(
+        'Hydra\BigHydraBundle\Jira\CommentGrep',
+        array(
+            new Reference('hydra_big_hydra.jira.mongo_repository'),
+        )
+    )
+);
