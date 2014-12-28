@@ -1,7 +1,7 @@
 <?php
 namespace Hydra\BigHydraBundle\Jira;
 
-use Hydra\BigHydraBundle\Jira\Analyse\Comments\Mentioned;
+use Hydra\BigHydraBundle\Jira\Analyse\Comments\Grep;
 use Hydra\BigHydraBundle\Jira\Load\MongoRepository;
 use Hydra\BigHydraBundle\Jira\Publish\Csv\Csv;
 
@@ -26,8 +26,9 @@ class MentionedReport
      */
     public function getMentionedInComment($mentioned, array $author)
     {
-        $report = new Mentioned($this->mongoRepo);
-        $report->setMentionedFilter([$mentioned]);
+        $report = new Grep($this->mongoRepo);
+        $pattern = sprintf('\[~%s\]', $mentioned);
+        $report->setPatternFilter([$pattern]);
         $report->setAuthorFilter($author);
         $rawReport = $report->runReport();
 
