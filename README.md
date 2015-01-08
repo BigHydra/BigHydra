@@ -18,6 +18,13 @@ Over time we will add more features.
 - [ ] git log report, to fill out the Jira time logging
 
 
+Requirements
+----------------------------------
+
+- mongodb version >=  2.6.0.
+- php version > 5.4.
+
+
 Installation
 ----------------------------------
 
@@ -43,7 +50,7 @@ Sync your Jira data
 Run the following command with your host and username.
 You will be asked to enter your password.
 
-    app/console hydra:jira:sync http://jira.atlassian.com [username]
+    app/console hydra:jira:sync http://jira.atlassian.com/ [username]
 
 You will see an output about the synced issues.
 
@@ -52,7 +59,7 @@ You will see an output about the synced issues.
 
 If you like to setup a scheduled sync every hour or once a day, please configure your credentials in your `parameters.yml`.
 
-    jira.auth.host:         http://jira.atlassian.com
+    jira.auth.host:         http://jira.atlassian.com/
     jira.auth.username:     demo
     jira.auth.password:     yourSecretPassword
 

@@ -32,7 +32,7 @@ parameters:
     report.mail.debug:          true
     report.mail.debug_target:   debug@report.local
 
-    jira.auth.host:         http://jira.atlassian.com
+    jira.auth.host:         http://jira.atlassian.com/
     jira.auth.username:     demo
     jira.auth.password:     yourSecretPassword
 
